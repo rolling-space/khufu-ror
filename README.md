@@ -68,3 +68,8 @@ Some lint issues can be auto-corrected. To fix them, run:
 ```
 bin/rake fix
 ```
+
+> [!WARNING]
+> A small number of Rubocop's auto-corrections are considered "unsafe" and may
+> occasionally produce incorrect results. After running `fix`, you should
+> review the changes and make sure the code still works as intended.
