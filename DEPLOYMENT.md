@@ -4,6 +4,7 @@
 
 These environment variables affect how the app functions when deployed in production.
 
+- `RAILS_HOSTNAME` - Redirect all requests to the specified canonical hostname
 - `RAILS_DISABLE_SSL` - Disable HSTS and secure cookies
 - `RAILS_ENV` **REQUIRED** - "production"
 - `RAILS_MAX_THREADS` - Number of threads per Puma process (default: 3)

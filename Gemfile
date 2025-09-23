@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
+gem "rack-canonical-host"
 gem "rails", "~> 8.0.3"
 gem "propshaft"
 gem "pg", "~> 1.1"
