@@ -50,3 +50,4 @@ end
 
 gem "tailwindcss-ruby", "~> 4.1"
 gem "tailwindcss-rails", "~> 4.3"
+gem "shadcn-ui", github: "jaimico159/shadcn-rails", branch: "jaimico159-update-to-rails8-and-tailwindcss4"
