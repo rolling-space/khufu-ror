@@ -47,3 +47,6 @@ group :test do
   gem "vcr"
   gem "webmock"
 end
+
+gem "tailwindcss-ruby", "~> 4.1"
+gem "tailwindcss-rails", "~> 4.3"

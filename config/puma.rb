@@ -45,3 +45,4 @@ pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
 # Automatically open the browser when in development
 require_relative "../lib/puma/plugin/open"
 plugin :open
+plugin :tailwindcss if ENV.fetch("RAILS_ENV", "development") == "development"
