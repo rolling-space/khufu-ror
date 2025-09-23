@@ -393,6 +393,7 @@ DEPENDENCIES
   capybara
   capybara-lockstep
   debug
+  dotenv (>= 3.0)
   jbuilder
   jsbundling-rails
   kamal
