@@ -5,10 +5,24 @@
     "node": "^20.9.0 || >= 22.0.0"
   },
   "scripts": {
-    "build": "bun bun.config.js"
+    "build": "bun bun.config.js",
+    "lint:js": "eslint 'app/{assets,components,frontend,javascript}/**/*.{cjs,js,jsx,ts,tsx}'",
+    "fix:js": "npm run -- lint:js --fix",
+    "lint": "npm-run-all lint:**",
+    "fix": "npm-run-all fix:**"
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.16"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/eslint": "^9.6.1",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-formatter-compact": "^8.40.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.6.2"
   }
 }
