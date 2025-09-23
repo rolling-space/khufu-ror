@@ -8,6 +8,11 @@ Rails.application.load_tasks
 Rake::Task[:default].prerequisites.clear if Rake::Task.task_defined?(:default)
 
 desc "Run all checks"
-task default: %w[spec] do
+task default: %w[spec erb_lint] do
   puts ">>>>>> [OK] All checks passed!"
+end
+
+desc "Apply auto-corrections"
+task fix: %w[ erb_lint:autocorrect] do
+  puts ">>>>>> [OK] All fixes applied!"
 end
