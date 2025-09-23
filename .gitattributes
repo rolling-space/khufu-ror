@@ -10,3 +10,6 @@ config/credentials.yml.enc diff=rails_credentials
 
 # See https://bun.sh/docs/install/lockfile
 *.lockb diff=lockb
+
+# Mark VCR cassettes as having been generated.
+spec/cassettes/* linguist-generated
