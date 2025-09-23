@@ -101,3 +101,22 @@ production:
     <<: *primary_production
     database: vyzor_production_cable
     migrations_paths: db/cable_migrate
+
+staging:
+  primary: &primary_staging
+    <<: *default
+    database: vyzor_staging
+    username: vyzor
+    password: <%= ENV["VYZOR_DATABASE_PASSWORD"] %>
+  cache:
+    <<: *primary_staging
+    database: vyzor_staging_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_staging
+    database: vyzor_staging_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_staging
+    database: vyzor_staging_cable
+    migrations_paths: db/cable_migrate
