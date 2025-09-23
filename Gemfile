@@ -17,6 +17,7 @@ gem "kamal", require: false
 gem "thruster", require: false
 
 group :development, :test do
+  gem "launchy"
   gem "factory_bot_rails"
   gem "dotenv", ">= 3.0"
   gem "rspec-rails"
