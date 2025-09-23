@@ -26,3 +26,8 @@ end
 group :development do
   gem "web-console"
 end
+
+group :test do
+  gem "selenium-webdriver", require: false
+  gem "capybara", require: false
+end
