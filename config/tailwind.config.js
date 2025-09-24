@@ -1,10 +1,25 @@
-// import forms from "@tailwindcss/forms";
-// import aspectRatio from "@tailwindcss/aspect-ratio";
-// import typography from "@tailwindcss/typography";
-// import containerQueries from "@tailwindcss/container-queries";
-// import defaultTheme from "tailwindcss/defaultTheme";
-import shadcnConfig from "./shadcn.tailwind";
+const defaultTheme = require("tailwindcss/defaultTheme");
+const shadcnConfig = require("./shadcn.tailwind.js");
 
-export default {
+module.exports = {
+  content: [
+    "./public/*.html",
+    "./app/helpers/**/*.rb",
+    "./app/javascript/**/*.js",
+    "./app/views/**/*.{erb,haml,html,slim}",
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ["Inter var", ...defaultTheme.fontFamily.sans],
+      },
+    },
+  },
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/aspect-ratio"),
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/container-queries"),
+  ],
   ...shadcnConfig,
 };
