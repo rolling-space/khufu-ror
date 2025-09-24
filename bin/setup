@@ -54,10 +54,14 @@ def node_present?
 end
 
 def install_node_packages_command
-  if File.exist?("yarn.lock")
+  if File.exist?("bun.lockb")
+    "bun install"
+  elsif File.exist?("yarn.lock")
     "yarn install --check-files"
-  else
+  elsif File.exist?("package-lock.json")
     "npm install"
+  else
+    "yarn install --check-files"
   end
 end
 

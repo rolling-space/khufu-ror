@@ -51,3 +51,7 @@ end
 gem "tailwindcss-ruby", "~> 4.1"
 gem "tailwindcss-rails", "~> 4.3"
 gem "shadcn-ui", github: "jaimico159/shadcn-rails", branch: "jaimico159-update-to-rails8-and-tailwindcss4"
+gem "bcrypt", "~> 3.1"
+gem 'yajl-ruby', require: 'yajl'
+
+gem "blueprinter", "~> 1.2"
