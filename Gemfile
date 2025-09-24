@@ -55,3 +55,12 @@ gem "bcrypt", "~> 3.1"
 gem 'yajl-ruby', require: 'yajl'
 
 gem "blueprinter", "~> 1.2"
+
+gem "devise", "~> 5.0.0.beta", github: "heartcombo/devise"
+gem "devise-tailwindcssed", github: "rolling-space/devise-tailwindcssed", branch: "relax-deps"
+gem "omniauth_openid_connect"
+gem "omniauth-rails_csrf_protection"
+gem "omniauth"
+gem "omniauth-oauth2"
+gem "omniauth-keycloak"
+
