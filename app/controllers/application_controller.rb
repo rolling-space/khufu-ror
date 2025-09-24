@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
   # Require authentication for all actions by default
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
 
   # Configure permitted parameters for Devise
   before_action :configure_permitted_parameters, if: :devise_controller?
