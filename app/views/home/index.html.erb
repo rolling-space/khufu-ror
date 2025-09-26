@@ -1,3 +1,11 @@
 <% provide(:title, "Home") %>
-<p>Find me in app/views/home/index.html.erb</p>
-<p>Stimulus says, <i data-controller=hello></i></p>
+<!--<p>Find me in app/views/home/index.html.erb</p>-->
+<!--<p>Stimulus says, <i data-controller=hello></i></p>-->
+
+<%= render_card(title: "Admin Dashboard", subtitle: "MotorAdmin") do %>
+  <%= link_to "Go to admin", motor_admin_url %>
+<% end %>
+
+<%= render_card(title: "Mission Control", subtitle: "SolidQueue") do %>
+  <%= link_to "Go to Jobs", "/jobs" %>
+<% end %>

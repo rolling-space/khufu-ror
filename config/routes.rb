@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }, skip: [:registrations]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # authenticate :user do
-  #   mount Motor::Admin => '/motor_admin'
-  # end
+  authenticate :user do
+    # mount Motor::Admin => '/motor_admin'
+    mount Motor::Admin => '/mad'
+    mount MissionControl::Jobs::Engine, at: "/jobs"
+  end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
@@ -19,4 +21,5 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
   root "home#index"
+  # root to: Motor::Admin
 end

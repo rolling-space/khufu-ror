@@ -1,22 +1,24 @@
 <div class="w-full max-w-xs">
   <h2 class="font-hairline mb-6 text-center">Log In</h2>
-<%= render_form_for(resource, as: resource_name, url: session_path(resource_name), class: "w-full") do |form| %>
+<%= render_form_for(resource, as: resource_name, url: session_path(resource_name), class: "w-full bg-white mb-4 px-8 pt-6 pb-8 rounded shadow-md") do |form| %>
   <div class="grid grid-cols-3 items-baseline mb-4">
-    <%= form.label :email, class: "text-right mr-4 text-lg" %>
-    <%= form.email_field :email, autofocus: true, autocomplete: "email", class: "col-span-2" %>
+    <%= form.label :email, class: "text-right mr-4 text-lg block text-gray-700 text-sm font-bold mb-2" %>
+    <%= form.email_field :email, autofocus: true, autocomplete: "email", class: "col-span-2 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight foucs:outline-none focus:shadow-outline" %>
   </div>
   <div class="grid grid-cols-3 items-baseline">
-    <%= form.label :password, class: "text-right mr-4 text-lg" %>
-    <%= form.password_field :password, autocomplete: "current-password", class: "col-span-2 mb-8" %>
+    <%= form.label :password, class: "text-right mr-4 text-lg block text-gray-700 text-sm font-bold mb-2" %>
+    <%= form.password_field :password, autocomplete: "current-password", class: "col-span-2 mb-8 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight foucs:outline-none focus:shadow-outline" %>
   </div>
   <% if devise_mapping.rememberable? %>
-    <div class="grid grid-cols-3 items-baseline">
-      <p><%= form.check_box :remember_me %></p>
-      <p><%= form.label :remember_me %></p>
+    <div class="grid grid-cols-3 items-baseline mb-4">
+      <p><%= form.check_box :remember_me, class: "mr-2 leading-tight" %></p>
+      <p><%= form.label :remember_me,
+                        class: "align-baseline inline-block text-gray-700 text-sm" %></p>
     </div>
   <% end %>
   <div class="flex justify-center actions">
-    <%= form.submit "Log In" %>
+    <%= form.submit "Log In",
+                    class: "button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" %>
   </div>
 <% end %>
 

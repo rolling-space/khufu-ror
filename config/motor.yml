@@ -1,0 +1,62 @@
+---
+engine_version: 0.4.37
+file_version: 2025-09-26 10:30:38.067759000 Z
+resources:
+- name: solid_cable/message
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:25.523672000 +02:00
+- name: solid_cache/entry
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:26.052878000 +02:00
+- name: solid_queue/blocked_execution
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:27.096871000 +02:00
+- name: solid_queue/claimed_execution
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:28.165332000 +02:00
+- name: solid_queue/failed_execution
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:28.954649000 +02:00
+- name: solid_queue/job
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:29.466982000 +02:00
+- name: solid_queue/pause
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:30.249175000 +02:00
+- name: solid_queue/process
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:32.060379000 +02:00
+- name: solid_queue/ready_execution
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:32.932470000 +02:00
+- name: solid_queue/recurring_execution
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:33.824232000 +02:00
+- name: solid_queue/recurring_task
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:35.022686000 +02:00
+- name: solid_queue/scheduled_execution
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:35.845166000 +02:00
+- name: solid_queue/semaphore
+  preferences:
+    visible: false
+  updated_at: 2025-09-26 12:30:38.067759000 +02:00
+configs: []
+queries: []
+dashboards: []
+forms: []
+alerts: []
+api_configs: []

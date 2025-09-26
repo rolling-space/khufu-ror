@@ -40,6 +40,7 @@ class User < ApplicationRecord
          :omniauthable, omniauth_providers: [:keycloakopenid]
 
   has_many :user_identities, dependent: :destroy
+  has_many :login_activities, as: :user
 
   def self.from_omniauth(auth)
     if auth.present? && auth.provider.present? && auth.uid.present?

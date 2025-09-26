@@ -1,0 +1,327 @@
+name: vyzor-engineering
+
+x-shell:
+  build:
+    context: .
+    dockerfile: Dockerfile.ci
+  image: registry.localhost/vyzor-next/shell:latest
+  ports:
+    - "7000"
+  volumes:
+    - "${PWD}:/bench/src"
+    - "${PWD}/.prive/bash-history:/usr/local/hist/.bash_history"
+  stdin_open: true
+  tty: true
+  command:
+    - tail
+    - -f
+    - /dev/null
+  working_dir: /bench/src
+  environment:
+  - DB_HOST=host.docker.internal
+  - GRANT_SUDO=yes
+  - MHF_EXTRA_DIRS='/bench/src'
+  - MHF_EXTRA_PERMS='/vols'
+  depends_on:
+    configurator:
+      condition: service_completed_successfully
+
+x-common: &common
+  networks:
+    - default
+    - engineering-proxy
+
+services:
+  configurator:
+    <<: *common
+    build:
+      context: .
+      dockerfile: Dockerfile.ci
+    image: registry.localhost/vyzor-next/server:latest-configurator
+    volumes:
+      - "bench-bundle:/bench/bundle"
+      - "${PWD}:/bench/src"
+      - "${PWD}/.prive/bash-history:/usr/local/hist/.bash_history"
+    stdin_open: true
+    tty: true
+    command:
+      - bin/setup
+    working_dir: /bench/src
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=host.docker.internal
+      - GRANT_SUDO=yes
+      - MHF_EXTRA_DIRS='/bench/src'
+      - MHF_EXTRA_PERMS='/vols'
+      - MHF_HOST_UID=${CUSTOM_UID:-1000}
+      - MHF_HOST_GID=${CUSTOM_GID:-1000}
+#    profiles:
+#      - dev
+#      - configurator
+#      - importmap
+
+
+  web:
+    <<: *common
+    build:
+      context: .
+      dockerfile: Dockerfile.ci
+    image: registry.localhost/vyzor-next/server:latest
+    ports:
+      - "7000:7000"
+    volumes_from:
+      - configurator
+    volumes:
+      - "${PWD}:/bench/src"
+      - "${PWD}/.prive/bash-history:/usr/local/hist/.bash_history"
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    command:
+      - bin/rails
+      - server
+      - -b
+      - 0.0.0.0
+    working_dir: /bench/src
+    environment:
+      - RUBY_DEBUG_OPEN=true
+      - DB_HOST=host.docker.internal
+      - GRANT_SUDO=yes
+      - MHF_EXTRA_DIRS='/projects /bench'
+      - MHF_EXTRA_PERMS='/vols'
+      - MHF_HOST_UID=${CUSTOM_UID:-1000}
+      - MHF_HOST_GID=${CUSTOM_GID:-1000}
+    depends_on:
+      configurator:
+        condition: service_completed_successfully
+
+
+  css:
+    <<: *common
+    build:
+      context: .
+      dockerfile: Dockerfile.ci
+    image: registry.localhost/vyzor-next/server:latest-css
+    volumes:
+      - "${PWD}:/bench/src"
+    volumes_from:
+      - configurator
+    stdin_open: true
+    env_file:
+      - .env
+    command:
+      - bin/rails
+      - tailwindcss:watch
+      - --watch
+    working_dir: /bench/src
+    environment:
+      - GRANT_SUDO=yes
+      - MHF_EXTRA_DIRS='/projects /bench'
+      - MHF_EXTRA_PERMS='/vols'
+      - DB_HOST=host.docker.internal
+      - MHF_HOST_UID=${CUSTOM_UID:-1000}
+      - MHF_HOST_GID=${CUSTOM_GID:-1000}
+    depends_on:
+      configurator:
+        condition: service_completed_successfully
+
+  js:
+    <<: *common
+    build:
+      context: .
+      dockerfile: Dockerfile.ci
+    image: registry.localhost/vyzor-next/server:latest-js
+    volumes:
+      - "${PWD}:/bench/src"
+    volumes_from:
+      - configurator
+    stdin_open: true
+    env_file:
+      - .env
+    command:
+      - bun
+      - run
+      - build
+      - --watch
+    working_dir: /bench/src
+    environment:
+      - GRANT_SUDO=yes
+      - MHF_EXTRA_DIRS='/projects /bench'
+      - MHF_EXTRA_PERMS='/vols'
+      - DB_HOST=host.docker.internal
+      - MHF_HOST_UID=${CUSTOM_UID:-1000}
+      - MHF_HOST_GID=${CUSTOM_GID:-1000}
+    depends_on:
+      configurator:
+        condition: service_completed_successfully
+
+  jobs:
+    <<: *common
+    build:
+      context: .
+      dockerfile: Dockerfile.ci
+    image: registry.localhost/vyzor-next/server:latest-js
+    volumes:
+      - "${PWD}:/bench/src"
+    volumes_from:
+      - configurator
+    stdin_open: true
+    env_file:
+      - .env
+    command:
+      - bin/jobs
+    working_dir: /bench/src
+    environment:
+      - GRANT_SUDO=yes
+      - MHF_EXTRA_DIRS='/projects /bench'
+      - MHF_EXTRA_PERMS='/vols'
+      - DB_HOST=host.docker.internal
+      - MHF_HOST_UID=${CUSTOM_UID:-1000}
+      - MHF_HOST_GID=${CUSTOM_GID:-1000}
+
+  pg-main:
+    <<: *common
+    image: postgres:17
+    environment:
+      - POSTGRES_PASSWORD=vyzor
+#      - POSTGRES_USER=vyzor
+    volumes:
+      - pg17_data:/var/lib/postgresql/data
+    ports:
+      - 5432
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles:
+    - standalone
+
+  production:
+    <<: *common
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: registry.localhost/vyzor-next/live:production
+    ports:
+      - "3002:3002"
+    volumes:
+      - "${PWD}/config/master.key:/bench/src/config/master.key:ro"
+#      - "${PWD}/config/credentials.yml.enc:/bench/src/config/credentials.yml.enc:ro"
+      - "${PWD}/.env.production:/bench/src/.env.production:ro"
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env.production
+    command:
+      - "./bin/thrust"
+      - "./bin/rails"
+      - "server"
+      - "-b"
+      - "0.0.0.0"
+      - "-p"
+      - "3002"
+    environment:
+#      - RUBY_DEBUG_OPEN=true
+      - DB_HOST=pg-main
+      - GRANT_SUDO=yes
+      - MHF_EXTRA_DIRS='/projects /bench'
+      - MHF_EXTRA_PERMS='/vols'
+      - MHF_HOST_UID=${CUSTOM_UID:-1000}
+      - MHF_HOST_GID=${CUSTOM_GID:-1000}
+      - RAILS_ENV=production
+      - RAILS_LOG_TO_STDOUT=true
+      - RAILS_SERVE_STATIC_FILES=true
+      - VYZOR_DATABASE_PASSWORD=postgres
+    depends_on:
+      pg-main:
+        condition: service_healthy
+    profiles:
+      - live
+      - standalone
+
+  staging:
+    <<: *common
+    build:
+      context: .
+      dockerfile: Dockerfile
+#      target: build
+      args:
+        RAILS_ENV: staging
+    image: registry.localhost/vyzor/live:staging
+    ports:
+      - "3002"
+    volumes:
+      - "${PWD}/config/master.key:/bench/src/config/master.key:ro"
+      #      - "${PWD}/config/credentials.yml.enc:/bench/src/config/credentials.yml.enc:ro"
+      - "${PWD}/.env.staging:/bench/src/.env.staging:ro"
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env.staging
+#    command:
+#      - "./bin/thrust"
+#      - "./bin/puma"
+#      - "-C"
+#      - "./config/puma.rb"
+#      - tail
+#      - -f
+#      - /dev/null
+#      - "./bin/thrust"
+#      - "./bin/rails"
+#      - "server"
+#      - "-b"
+#      - "0.0.0.0"
+#      - "-p"
+#      - "3002"
+    environment:
+      #      - RUBY_DEBUG_OPEN=true
+      - DB_HOST=pg-main
+      - GRANT_SUDO=yes
+      - MHF_EXTRA_DIRS='/projects /bench'
+      - MHF_EXTRA_PERMS='/vols'
+      - MHF_HOST_UID=${CUSTOM_UID:-1000}
+      - MHF_HOST_GID=${CUSTOM_GID:-1000}
+      - RAILS_ENV=staging
+      - RAILS_LOG_TO_STDOUT=true
+      - RAILS_SERVE_STATIC_FILES=true
+      - VYZOR_DATABASE_PASSWORD=vyzor
+      - VYZOR_DATABASE_USERNAME=postgres
+      - VIRTUAL_HOST=staging.engineering.test
+      - VIRTUAL_PORT=80
+    depends_on:
+      pg-main:
+        condition: service_healthy
+    profiles:
+      - live
+      - standalone
+
+
+#  contextmax:
+#    image: node:22
+#    user: "node"
+#    working_dir: /project
+#    volumes:
+#      - "${PWD}:/project"
+#    ports:
+#      - "3013:3013"
+#    environment:
+#      PORT: 3013
+#    command:
+#      - npx
+#      - contextmax
+#    profiles:
+#      - tools
+
+volumes:
+  bench-bundle: {}
+  pg17_data: {}
+
+networks:
+#  default:
+#    name: vyzor-next-proxy
+#    external: true
+  engineering-proxy:
+    external: true

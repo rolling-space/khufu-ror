@@ -28,7 +28,8 @@ Rails.application.configure do
   end
 
   # Change to :null_store to avoid any caching.
-  config.cache_store = :memory_store
+  # config.cache_store = :memory_store
+  config.cache_store = :solid_cache_store
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
@@ -75,4 +76,12 @@ Rails.application.configure do
   if defined?(WebConsole)
     config.web_console.permissions = ['192.168.0.0/16', '172.0.0.0/8', '127.0.0.0/8', '::1']
   end
+
+  # Enable SolidQueue
+  # Use Solid Queue in Development.
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
+
+  config.solid_cache.connects_to database: { writing: :cache }
+  config.mission_control.jobs.http_basic_auth_enabled = false
 end

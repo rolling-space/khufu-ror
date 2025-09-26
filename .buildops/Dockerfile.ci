@@ -1,0 +1,55 @@
+# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
+# docker build -t vyzor .
+# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name vyzor vyzor
+
+# For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
+
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
+ARG RUBY_VERSION=3.4.4
+FROM registry.gitlab.com/ci-containers/ruby:${RUBY_VERSION}-jemalloc-bookworm-slim AS base
+USER 0
+# Rails app lives here
+WORKDIR /project
+
+# Install base packages
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y unzip watchman ncdu && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
+    touch /.dockerenv
+
+ENV BROWSER=/dev/null \
+    LAUNCHY_DRY_RUN=true \
+    PORT=7000
+# Throw-away build stage to reduce size of final image
+
+ENV BUN_INSTALL=/usr/local/bun
+ENV PATH=/usr/local/bun/bin:$PATH
+ARG BUN_VERSION=1.2.18
+RUN curl -fsSL https://bun.sh/install | bash -s -- "bun-v${BUN_VERSION}"
+
+#FROM base AS build
+#
+#USER 1000
+#WORKDIR /bench/src
+#ENV BUNDLE_PATH=/bench/bundle
+#ENV PATH=/home/runner/.local/share/gem/ruby/3.4.0/bin:$PATH
+## Install application gems
+#COPY --chown="1000:1000" Gemfile Gemfile.lock ./
+#RUN bundle install && \
+#    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
+#
+## Install node modules
+#COPY --chown="1000:1000" package.json bun.lockb ./
+#RUN bun install
+#
+## Copy application code
+#COPY --chown="1000:1000" . .
+#
+## Start server via Thruster by default, this can be overwritten at runtime
+#
+## CMD ["./bin/thrust", "./bin/rails", "server"]
+#CMD ["./bin/dev"]
+
+#USER 0
+
+RUN chmod +x /sbin/matchhostfsowner

@@ -49,3 +49,24 @@
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*
+.envrc
+vendor/helm-charts
+vendor/responses
+vendor/values.yaml
+/.env.development
+/warehouse/*
+/*/**/secrets/
+.env*
+!.env*.sample
+.local/
+project/
+/fedora/
+/podman.Dockerfile
+/docker-compose.yml
+sshkeys/*
+!sshkeys/.keep
+/secrets/*
+!/secrets/.keep
+/*acc.yaml
+.kube/
+/.secrets/

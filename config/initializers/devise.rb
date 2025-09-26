@@ -299,12 +299,13 @@ Devise.setup do |config|
   #                 strategy_class: OmniAuth::Strategies::Keycloak, token_params: { parse: :json }
 
   config.omniauth :keycloak_openid,
-                  ENV.fetch("KEYCLOAK_CLIENT_ID"),
-                  ENV.fetch("KEYCLOAK_CLIENT_SECRET"),
+                  ENV.fetch("KEYCLOAK_CLIENT_ID","RandomStringForKeycloakClientId"),
+                  ENV.fetch("KEYCLOAK_CLIENT_SECRET","RandomStringForKeycloakClientSecret"),
                   client_options: {
-                    site: ENV.fetch("KEYCLOAK_URL"),
-                    realm: ENV.fetch("KEYCLOAK_REALM"),
-                    base_url: ''
+                    site: ENV.fetch("KEYCLOAK_URL","http://localhost:8080"),
+                    realm: ENV.fetch("KEYCLOAK_REALM","Arbitrary"),
+                    base_url: '',
+                    name: 'Keycloak Internal'
                   },
                   :strategy_class => OmniAuth::Strategies::KeycloakOpenId
   # ==> Warden configuration

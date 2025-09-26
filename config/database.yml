@@ -20,14 +20,29 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   <% if ENV["DB_HOST"] %>
   host: <%= ENV["DB_HOST"] %>
-  username: postgres
-  password: postgres
+  username: <%= ENV.fetch("VYZOR_DATABASE_USERNAME", "postgres") %>
+  password: <%= ENV.fetch("VYZOR_DATABASE_PASSWORD", "postgres") %>
   <% end %>
 
 
 development:
-  <<: *default
-  database: vyzor_development
+  primary: &primary_development
+    <<: *default
+    database: vyzor_development
+    username: <%= ENV["VYZOR_DATABASE_USERNAME"] %>
+    password: <%= ENV["VYZOR_DATABASE_PASSWORD"] %>
+  cache:
+    <<: *primary_development
+    database: vyzor_development_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_development
+    database: vyzor_development_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_development
+    database: vyzor_development_cable
+    migrations_paths: db/cable_migrate
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -87,7 +102,7 @@ production:
   primary: &primary_production
     <<: *default
     database: vyzor_production
-    username: vyzor
+    username: <%= ENV["VYZOR_DATABASE_USERNAME"] %>
     password: <%= ENV["VYZOR_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production
@@ -106,7 +121,7 @@ staging:
   primary: &primary_staging
     <<: *default
     database: vyzor_staging
-    username: vyzor
+    username: <%= ENV["VYZOR_DATABASE_USERNAME"] %>
     password: <%= ENV["VYZOR_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_staging
