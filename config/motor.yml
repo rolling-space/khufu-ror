@@ -1,6 +1,6 @@
 ---
 engine_version: 0.4.37
-file_version: 2025-09-26 10:30:38.067759000 Z
+file_version: 2025-09-26 18:13:09.642970000 Z
 resources:
 - name: solid_cable/message
   preferences:
@@ -54,7 +54,10 @@ resources:
   preferences:
     visible: false
   updated_at: 2025-09-26 12:30:38.067759000 +02:00
-configs: []
+configs:
+- key: homepage.layout
+  value: []
+  updated_at: 2025-09-26 20:13:09.642970000 +02:00
 queries: []
 dashboards: []
 forms: []
