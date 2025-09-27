@@ -273,31 +273,6 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
 
-  # config.omniauth :openid_connect, {
-  #   name: 'AMS-IX',
-  #   scope: [:openid, :email, :profile],
-  #   response_type: :code,
-  #   send_nonce: false,
-  #   state: false,
-  #   uid_field: "preferred_username",
-  #   issuer: "https://auth.apps.ams-ix.tech/realms/ams-ix",
-  #   token_params: { parse: :json },
-  #   client_options: {
-  #     port: 443,
-  #     scheme: "https",
-  #     host: "auth.apps.ams-ix.tech",
-  #     identifier: ENV["OIDC_KEYCLOAK_CLIENT_ID"],
-  #     secret: ENV["OIDC_KEYCLOAK_CLIENT_SECRET"],
-  #     redirect_uri: "http://localhost:3002/users/auth/openid_connect/callback",
-  #   },
-  # }
-  #
-  # config.omniauth :keycloak,
-  #                 ENV.fetch("KEYCLOAK_CLIENT_ID"),
-  #                 ENV.fetch("KEYCLOAK_CLIENT_SECRET"),
-  #                 scope: 'openid email profile',
-  #                 strategy_class: OmniAuth::Strategies::Keycloak, token_params: { parse: :json }
-
   config.omniauth :keycloak_openid,
                   ENV.fetch("KEYCLOAK_CLIENT_ID","RandomStringForKeycloakClientId"),
                   ENV.fetch("KEYCLOAK_CLIENT_SECRET","RandomStringForKeycloakClientSecret"),

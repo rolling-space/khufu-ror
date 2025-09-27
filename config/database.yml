@@ -20,35 +20,35 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   <% if ENV["DB_HOST"] %>
   host: <%= ENV["DB_HOST"] %>
-  username: <%= ENV.fetch("VYZOR_DATABASE_USERNAME", "postgres") %>
-  password: <%= ENV.fetch("VYZOR_DATABASE_PASSWORD", "postgres") %>
+  username: <%= ENV.fetch("KHUFU_ROR_DATABASE_USERNAME", "postgres") %>
+  password: <%= ENV.fetch("KHUFU_ROR_DATABASE_PASSWORD", "postgres") %>
   <% end %>
 
 
 development:
   primary: &primary_development
     <<: *default
-    database: vyzor_development
-    username: <%= ENV["VYZOR_DATABASE_USERNAME"] %>
-    password: <%= ENV["VYZOR_DATABASE_PASSWORD"] %>
+    database: khufu_ror_development
+    username: <%= ENV["KHUFU_ROR_DATABASE_USERNAME"] %>
+    password: <%= ENV["KHUFU_ROR_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_development
-    database: vyzor_development_cache
+    database: khufu_ror_development_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_development
-    database: vyzor_development_queue
+    database: khufu_ror_development_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_development
-    database: vyzor_development_cable
+    database: khufu_ror_development_cable
     migrations_paths: db/cable_migrate
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
   # When left blank, PostgreSQL will use the default role. This is
   # the same name as the operating system user running Rails.
-  #username: vyzor
+  #username: khufu_ror
 
   # The password associated with the PostgreSQL role (username).
   #password:
@@ -76,7 +76,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: vyzor_test
+  database: khufu_ror_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -101,37 +101,37 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: vyzor_production
-    username: <%= ENV["VYZOR_DATABASE_USERNAME"] %>
-    password: <%= ENV["VYZOR_DATABASE_PASSWORD"] %>
+    database: khufu_ror_production
+    username: <%= ENV["KHUFU_ROR_DATABASE_USERNAME"] %>
+    password: <%= ENV["KHUFU_ROR_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production
-    database: vyzor_production_cache
+    database: khufu_ror_production_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
-    database: vyzor_production_queue
+    database: khufu_ror_production_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
-    database: vyzor_production_cable
+    database: khufu_ror_production_cable
     migrations_paths: db/cable_migrate
 
 staging:
   primary: &primary_staging
     <<: *default
-    database: vyzor_staging
-    username: <%= ENV["VYZOR_DATABASE_USERNAME"] %>
-    password: <%= ENV["VYZOR_DATABASE_PASSWORD"] %>
+    database: khufu_ror_staging
+    username: <%= ENV["KHUFU_ROR_DATABASE_USERNAME"] %>
+    password: <%= ENV["KHUFU_ROR_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_staging
-    database: vyzor_staging_cache
+    database: khufu_ror_staging_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_staging
-    database: vyzor_staging_queue
+    database: khufu_ror_staging_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_staging
-    database: vyzor_staging_cable
+    database: khufu_ror_staging_cable
     migrations_paths: db/cable_migrate

@@ -1,0 +1,242 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# Thor-based Rails app renamer for Rails >= 7
+# Usage examples:
+#   ruby script/rename_rails_app.rb rename Vyzor Agrowater --project . --dry-run
+#   ruby script/rename_rails_app.rb rename Vyzor Agrowater --project .
+# Or, if Thorfile is present, you can also run:
+#   thor rename:app Vyzor Agrowater --project . --dry-run
+#
+require "thor"
+require "find"
+require "fileutils"
+require "time"
+
+class RenameRor < Thor
+  namespace :rename
+
+  class_option :project, type: :string, default: ".", desc: "Project root directory"
+  class_option :dry_run, type: :boolean, default: false, desc: "Show what would change without modifying files"
+  class_option :logfile, type: :string, default: nil, desc: "Custom log file path"
+
+  no_commands do
+    def say_log(msg)
+      ts = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+      line = "[#{ts}] #{msg}"
+      puts(line)
+      @log_io&.puts(line)
+      @log_io&.flush
+    end
+
+    def ensure_log!
+      root = File.expand_path(options[:project])
+      logs_dir = File.join(root, "script", "logs")
+      FileUtils.mkdir_p(logs_dir)
+      log_path = options[:logfile] || File.join(logs_dir, "rename_rails_app.#{Time.now.strftime('%Y%m%d-%H%M%S')}.log")
+      @log_io = File.open(log_path, "a")
+      say_log("Logging to: #{log_path}")
+    end
+
+    def rails_major_version(root)
+      lock = File.join(root, "Gemfile.lock")
+      if File.file?(lock)
+        rails_line = nil
+        File.foreach(lock) do |line|
+          # Match lines like: "    rails (8.0.0)"
+          if line =~ /^\s{4}rails \(([^)]+)\)/
+            rails_line = Regexp.last_match(1)
+            break
+          end
+        end
+        if rails_line
+          major = rails_line.split(".").first.to_i
+          return major if major > 0
+        end
+      end
+      # Fallback: try bin/rails -v (non-fatal if it fails)
+      bin_rails = File.join(root, "bin", "rails")
+      if File.executable?(bin_rails)
+        begin
+          out = IO.popen([bin_rails, "-v"], chdir: root, err: %i[child out]) { |io| io.read }
+          if out && out =~ /Rails\s+(\d+)\./
+            return Regexp.last_match(1).to_i
+          end
+        rescue StandardError
+          # ignore
+        end
+      end
+      nil
+    end
+
+    def to_lower(s) = s.to_s.downcase
+    def to_upper(s) = s.to_s.upcase
+
+    def to_snake(s)
+      # Convert CamelCase, kebab, or spaced strings to snake_case
+      str = s.to_s.dup
+      # Insert underscore between camel humps
+      str = str.gsub(/([a-z0-9])([A-Z])/, '\1_\2')
+      # Normalize non-word separators to underscore
+      str = str.gsub(/[^a-zA-Z0-9]+/, '_')
+      str.downcase
+    end
+
+    def to_camel(s)
+      to_snake(s).split('_').map { _1.capitalize }.join
+    end
+
+    def candidate_variants(s)
+      snake = to_snake(s)
+      {
+        camel: to_camel(s),
+        lower: to_lower(s),
+        upper: to_upper(s),
+        snake: snake,
+        snake_upper: to_upper(snake)
+      }
+    end
+
+    def excluded_path?(root, path)
+      rel = path.sub(%r{^#{Regexp.escape(root)}/?}, "")
+      # Directories and globs to skip (aligns with bash script intent)
+      exclude_prefixes = [
+        ".git", "vendor", "node_modules", "tmp", "log", "storage", ".bundle",
+        "public/assets", "public/packs", "script/logs"
+      ]
+      return true if exclude_prefixes.any? { |p| rel == p || rel.start_with?(p + "/") }
+      # Skip compiled binaries in bin/ (but keep bin/rails etc. as text) – conservative: allow bin/*, but we will binary-scan files anyway
+      false
+    end
+
+    def binary_file?(path)
+      # Heuristic: read a chunk and check for null bytes
+      File.open(path, "rb") do |f|
+        data = f.read(4096)
+        return false if data.nil?
+        return data.include?("\x00")
+      end
+    rescue StandardError
+      # On error treat as binary to be safe
+      true
+    end
+
+    def file_contains_any?(path, needles)
+      begin
+        content = File.read(path, mode: "r:UTF-8")
+      rescue ArgumentError, Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
+        return false
+      end
+      needles.any? { |n| content.include?(n) }
+    end
+
+    def substitute_content(content, from_variants, to_variants)
+      # Order is important: UPPER/env first, then Camel, then snake, then lower
+      content = content.gsub(from_variants[:snake_upper], to_variants[:snake_upper])
+      content = content.gsub(from_variants[:upper], to_variants[:upper])
+      content = content.gsub(from_variants[:camel], to_variants[:camel])
+      content = content.gsub(from_variants[:snake], to_variants[:snake])
+      content = content.gsub(from_variants[:lower], to_variants[:lower])
+      content
+    end
+
+    def fix_application_module!(root, from_camel, to_camel)
+      app_file = File.join(root, "config", "application.rb")
+      return unless File.file?(app_file)
+      content = File.read(app_file, mode: "r:UTF-8")
+      return unless content.include?("module #{from_camel}")
+      if options[:dry_run]
+        say_log("Would set module #{to_camel} in config/application.rb")
+      else
+        say_log("Fixing module name in config/application.rb")
+        content = content.gsub("module #{from_camel}", "module #{to_camel}")
+        File.write(app_file, content)
+      end
+    end
+  end
+
+  desc "app OLD NEW", "Rename a Rails app across code, configs, envs with case preservation"
+  def app(old_name, new_name)
+    root = File.expand_path(options[:project])
+    FileUtils.mkdir_p(root)
+    ensure_log!
+
+    say_log("Starting Rails rename in: #{root}")
+
+    major = rails_major_version(root)
+    if major && major < 7
+      say_log("ERROR: Rails version #{major} detected (< 7). Aborting.")
+      exit(65)
+    elsif major
+      say_log("Detected Rails major version: #{major}")
+    else
+      say_log("Rails version not determinable; proceeding (assume >= 7)")
+    end
+
+    from = candidate_variants(old_name)
+    to   = candidate_variants(new_name)
+    say_log("Old variants: #{from.inspect}")
+    say_log("New variants: #{to.inspect}")
+
+    # Build list of files
+    files = []
+    Find.find(root) do |path|
+      if File.directory?(path)
+        if excluded_path?(root, path)
+          Find.prune
+        else
+          next
+        end
+      else
+        files << path
+      end
+    end
+    say_log("Scanning #{files.size} files (excluding common binary/external paths)")
+
+    needles = [from[:camel], from[:upper], from[:lower], from[:snake], from[:snake_upper]]
+
+    updated = 0
+    files.each do |file|
+      # Skip obvious binaries
+      next if binary_file?(file)
+      next unless file_contains_any?(file, needles)
+
+      if options[:dry_run]
+        say_log("Would update: #{file}")
+        next
+      end
+
+      begin
+        content = File.read(file, mode: "r:UTF-8")
+      rescue ArgumentError, Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
+        next
+      end
+      new_content = substitute_content(content, from, to)
+      next if new_content == content
+
+      File.write(file, new_content)
+      updated += 1
+      say_log("Updated: #{file}")
+    end
+
+    if File.exist?('README.md.original')
+      if File.exist?('README.md')
+        FileUtils.mv('README.md', 'warehouse/README.md.template-repo')
+        say_log("Renamed: README.md.original -> warehouse/README.md.template-repo")
+      end
+      FileUtils.mv('README.md.original', 'README.md')
+      say_log("Renamed: README.md.original -> README.md")
+    end
+
+    fix_application_module!(root, from[:camel], to[:camel])
+
+    say_log("Rename complete. Dry-run: #{options[:dry_run]}")
+  ensure
+    @log_io&.close
+  end
+end
+
+# If executed directly, start Thor CLI
+if $PROGRAM_NAME == __FILE__
+  RenameRor.start(ARGV)
+end

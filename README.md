@@ -1,75 +1,13 @@
-# vyzor
+# khufu_ror Template Repo
 
-This is a Rails 8.0 app.
+This is a Rails 8.0 ready-to-go template repo. It follows the Github definition of what a template repo is and may not be confused with a Rails app template.
 
-## Prerequisites
+# How to use
 
-This project requires:
+1. Create a new repo from this template
+   1. Conventionaly, the name of your choice will also define the name of the rails application
+2. Clone that repo locally
+3. Run `script/rename-ror` to rename all references of the template repo to your new app name
+   1. This will also update the `README.md` file you are now reading with the original Rails one.
+4. Follow the updated README.md instructions to get started
 
-- Ruby (see [.ruby-version](./.ruby-version)), preferably managed using [rbenv](https://github.com/rbenv/rbenv)
-- Node 20 (LTS) or newer
-- Yarn 1.x (classic)
-- PostgreSQL must be installed and accepting connections
-
-On macOS, these [Homebrew](http://brew.sh) packages are recommended:
-
-```
-brew install rbenv
-brew install node
-brew install yarn
-brew install postgresql@17
-```
-
-## Getting started
-
-### bin/setup
-
-Run this script to install necessary dependencies and prepare the Rails app to be started for the first time.
-
-```
-bin/setup
-```
-
-> [!TIP]
-> The `bin/setup` script is idempotent and is designed to be run often. You should run it every time you pull code that introduces new dependencies or makes other significant changes to the project.
-
-> [!TIP]
-> To drop your existing database and start over with a clean local environment, use `bin/setup --reset`.
-
-### Run the app!
-
-Start the Rails server with this command:
-
-```
-bin/dev
-```
-
-The app will be located at <http://localhost:3000/>.
-
-## Development
-
-Use this command to run the full suite of automated tests and lint checks:
-
-```
-bin/rake
-```
-
-> [!TIP]
-> Rake allows you to run all checks in parallel with the `-m` option. This is much faster, but since the output is interleaved, it may be harder to read.
-
-```
-bin/rake -m
-```
-
-### Fixing lint issues
-
-Some lint issues can be auto-corrected. To fix them, run:
-
-```
-bin/rake fix
-```
-
-> [!WARNING]
-> A small number of Rubocop's auto-corrections are considered "unsafe" and may
-> occasionally produce incorrect results. After running `fix`, you should
-> review the changes and make sure the code still works as intended.

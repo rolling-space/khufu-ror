@@ -1,4 +1,4 @@
-name: "vyzor"
+name: "khufu_ror"
 
 services:
   rails-app:

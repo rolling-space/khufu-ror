@@ -585,25 +585,13 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,linux,windows,visualstudiocode,vim,emacs,jetbrains+all,node,ruby,rails,go,helm,direnv,dotenv
-/GITINFO
-.envrc
-vendor/helm-charts
-vendor/responses
-vendor/values.yaml
-/.env.development
-/warehouse/*
-/*/**/secrets/
+warehouse/
+!warehouse/.keep
 .env*
 !.env*.sample
-.local/
-project/
-/fedora/
-/podman.Dockerfile
-/docker-compose.yml
-sshkeys/*
-!sshkeys/.keep
-/secrets/*
-!/secrets/.keep
-/*acc.yaml
-.kube/
-/.secrets/
+.prive/
+!.prive/.keep
+
+.ruby-version
+.rbenv-gemsets
+
