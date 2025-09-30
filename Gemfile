@@ -48,27 +48,27 @@ group :test do
   gem "webmock"
 end
 
-gem "tailwindcss-ruby", "~> 4.1"
-gem "tailwindcss-rails", "~> 4.3"
-gem "shadcn-ui", github: "jaimico159/shadcn-rails", branch: "jaimico159-update-to-rails8-and-tailwindcss4"
 gem "bcrypt", "~> 3.1"
-gem 'yajl-ruby', require: 'yajl'
+gem "shadcn-ui", github: "jaimico159/shadcn-rails", branch: "jaimico159-update-to-rails8-and-tailwindcss4"
+gem "tailwindcss-rails", "~> 4.3"
+gem "tailwindcss-ruby", "~> 4.1"
+gem "yajl-ruby", require: "yajl"
 
 gem "blueprinter", "~> 1.2"
 
 gem "devise", "~> 5.0.0.beta", github: "heartcombo/devise"
 # gem "devise-tailwindcssed", github: "rolling-space/devise-tailwindcssed", branch: "relax-deps"
+gem "omniauth"
+gem "omniauth-keycloak"
+gem "omniauth-oauth2"
 gem "omniauth_openid_connect"
 gem "omniauth-rails_csrf_protection"
-gem "omniauth"
-gem "omniauth-oauth2"
-gem "omniauth-keycloak"
+gem "authtrail", "~> 0.7.0"
 
 gem "motor-admin", "~> 0.4.37"
 
-gem "authtrail", "~> 0.7.0"
-gem "rack-cors"
 gem "mission_control-jobs"
+gem "rack-cors"
 
 # gem "avo", ">= 3.2"
 # gem "countries", "~> 6.0"
@@ -77,3 +77,29 @@ gem "mission_control-jobs"
 # gem 'acts-as-taggable-on', '~> 12.0'
 # gem "xsv", "~> 1.3"
 # gem "csv", "~> 3.3"
+
+# AR extensions
+gem "store_attribute"
+gem "store_model"
+# Soft-deletion
+gem "discard"
+# Helpers to group by time periods
+gem "groupdate"
+
+# Postgres extensions
+gem "pg_search"
+gem "postgresql_cursor"
+gem "pg_trunk"
+
+gem "action_policy"
+gem "skooma", group: :test
+
+# Serializers
+# gem 'alba'
+# or
+gem 'panko_serializer'
+
+gem "yabeda-puma-plugin"
+gem "yabeda-http_requests"
+gem "yabeda-activerecord"
+gem "yabeda-rails"

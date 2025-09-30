@@ -20,6 +20,8 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    action_policy (0.7.5)
+      ruby-next-core (>= 1.0)
     actioncable (8.0.3)
       actionpack (= 8.0.3)
       activesupport (= 8.0.3)
@@ -158,6 +160,8 @@ GEM
       irb (~> 1.10)
       reline (>= 0.3.8)
     diff-lcs (1.6.2)
+    discard (1.4.0)
+      activerecord (>= 4.2, < 9.0)
     dotenv (3.1.8)
     drb (2.2.3)
     ed25519 (1.4.0)
@@ -192,6 +196,9 @@ GEM
       raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    groupdate (6.7.0)
+      activesupport (>= 7.1)
+    hana (1.3.7)
     hashdiff (1.2.1)
     hashie (5.0.0)
     i18n (1.14.7)
@@ -218,6 +225,12 @@ GEM
       bindata
       faraday (~> 2.0)
       faraday-follow_redirects
+    json_skooma (0.2.5)
+      bigdecimal
+      hana (~> 1.3)
+      regexp_parser (~> 2.0)
+      uri-idna (~> 0.2)
+      zeitwerk (~> 2.6)
     jwt (3.1.2)
       base64
     kamal (2.7.0)
@@ -352,6 +365,15 @@ GEM
     pg (1.6.2-arm64-darwin)
     pg (1.6.2-x86_64-linux)
     pg (1.6.2-x86_64-linux-musl)
+    pg_search (2.3.7)
+      activerecord (>= 6.1)
+      activesupport (>= 6.1)
+    pg_trunk (0.2.0)
+      activerecord (>= 4.0.0)
+      pg
+      railties (>= 4.0.0)
+    postgresql_cursor (0.6.9)
+      activerecord (>= 6.0)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -482,6 +504,7 @@ GEM
       rack (>= 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.44.0, < 2.0)
+    ruby-next-core (1.1.2)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.4.1)
@@ -493,6 +516,9 @@ GEM
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
     sin_lru_redux (2.5.2)
+    skooma (0.3.6)
+      json_skooma (~> 0.2.5)
+      zeitwerk (~> 2.6)
     smart_properties (1.17.0)
     snaky_hash (2.0.3)
       hashie (>= 0.1.0, < 6)
@@ -522,6 +548,10 @@ GEM
       ostruct
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
+    store_attribute (2.0.1)
+      activerecord (>= 6.1)
+    store_model (4.3.0)
+      activerecord (>= 7.0)
     stringio (3.1.7)
     swd (2.0.3)
       activesupport (>= 3)
@@ -555,6 +585,7 @@ GEM
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
     uri (1.0.3)
+    uri-idna (0.3.1)
     useragent (0.16.11)
     validate_url (1.0.15)
       activemodel (>= 3.0.0)
@@ -599,6 +630,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  action_policy
   annotaterb
   authtrail (~> 0.7.0)
   bcrypt (~> 3.1)
@@ -610,9 +642,11 @@ DEPENDENCIES
   capybara-lockstep
   debug
   devise (~> 5.0.0.beta)!
+  discard
   dotenv (>= 3.0)
   erb_lint
   factory_bot_rails
+  groupdate
   jbuilder
   jsbundling-rails
   kamal
@@ -625,6 +659,9 @@ DEPENDENCIES
   omniauth-rails_csrf_protection
   omniauth_openid_connect
   pg (~> 1.1)
+  pg_search
+  pg_trunk
+  postgresql_cursor
   propshaft
   puma (>= 5.0)
   rack-canonical-host
@@ -638,10 +675,13 @@ DEPENDENCIES
   rubocop-rails
   selenium-webdriver
   shadcn-ui!
+  skooma
   solid_cable
   solid_cache
   solid_queue
   stimulus-rails
+  store_attribute
+  store_model
   tailwindcss-rails (~> 4.3)
   tailwindcss-ruby (~> 4.1)
   thruster
@@ -653,4 +693,4 @@ DEPENDENCIES
   yajl-ruby
 
 BUNDLED WITH
-   2.6.9
+   2.7.2

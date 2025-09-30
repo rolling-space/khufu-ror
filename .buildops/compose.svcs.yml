@@ -1,0 +1,66 @@
+name: khufu_ror-svcs
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    ports:
+      - "8080"
+    networks:
+      - khufu_ror-proxy
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=
+      - VIRTUAL_HOST=auth.puma-dev-dns.home
+      - VIRTUAL_PORT=8080
+    command: start-dev
+    profiles:
+      - kc
+
+  mail:
+    restart: unless-stopped
+    image: axllent/mailpit
+    networks:
+      - khufu_ror-proxy
+    environment:
+      VIRTUAL_HOST: mail.puma-dev-dns.home
+      VIRTUAL_PORT: 8025
+    logging:
+      #      driver: 'json'  # disable saving logs
+      driver: "none" # disable saving logs
+    expose:
+      - "1025"
+      - "8025"
+
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    networks:
+      - default
+      - khufu_ror-proxy
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:
+    healthcheck:
+      test: pg_isready -U postgres -h 127.0.0.1
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    ports:
+      - "36777:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - khufu_ror-proxy
+    restart: unless-stopped
+
+networks:
+  khufu_ror-proxy:
+    external: true
+
+volumes:
+  postgres-data:

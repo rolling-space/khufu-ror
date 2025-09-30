@@ -274,15 +274,15 @@ Devise.setup do |config|
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
 
   config.omniauth :keycloak_openid,
-                  ENV.fetch("KEYCLOAK_CLIENT_ID","RandomStringForKeycloakClientId"),
-                  ENV.fetch("KEYCLOAK_CLIENT_SECRET","RandomStringForKeycloakClientSecret"),
+                  ENV.fetch("KEYCLOAK_CLIENT_ID", "RandomStringForKeycloakClientId"),
+                  ENV.fetch("KEYCLOAK_CLIENT_SECRET", "RandomStringForKeycloakClientSecret"),
                   client_options: {
-                    site: ENV.fetch("KEYCLOAK_URL","http://localhost:8080"),
-                    realm: ENV.fetch("KEYCLOAK_REALM","Arbitrary"),
-                    base_url: '',
-                    name: 'Keycloak Internal'
+                    site: ENV.fetch("KEYCLOAK_URL", "http://localhost:8080"),
+                    realm: ENV.fetch("KEYCLOAK_REALM", "Arbitrary"),
+                    base_url: ''
                   },
-                  :strategy_class => OmniAuth::Strategies::KeycloakOpenId
+                  display_name: 'Keycloak Internal',
+                  strategy_class: OmniAuth::Strategies::KeycloakOpenId
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.
