@@ -281,7 +281,7 @@ Devise.setup do |config|
                     realm: ENV.fetch("KEYCLOAK_REALM", "Arbitrary"),
                     base_url: ''
                   },
-                  display_name: 'Keycloak Internal',
+                  display_name: 'AMS-IX Internal',
                   strategy_class: OmniAuth::Strategies::KeycloakOpenId
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

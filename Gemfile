@@ -49,9 +49,9 @@ group :test do
 end
 
 gem "bcrypt", "~> 3.1"
-gem "shadcn-ui", github: "jaimico159/shadcn-rails", branch: "jaimico159-update-to-rails8-and-tailwindcss4"
+# gem "shadcn-ui", github: "jaimico159/shadcn-rails", branch: "jaimico159-update-to-rails8-and-tailwindcss4"
 gem "tailwindcss-rails", "~> 4.3"
-gem "tailwindcss-ruby", "~> 4.1"
+# gem "tailwindcss-ruby", "~> 4.1"
 gem "yajl-ruby", require: "yajl"
 
 gem "blueprinter", "~> 1.2"
@@ -99,7 +99,7 @@ gem "skooma", group: :test
 # or
 gem 'panko_serializer'
 
-gem "yabeda-puma-plugin"
-gem "yabeda-http_requests"
-gem "yabeda-activerecord"
-gem "yabeda-rails"
+# gem "yabeda-puma-plugin"
+# gem "yabeda-http_requests"
+# gem "yabeda-activerecord"
+# gem "yabeda-rails"
