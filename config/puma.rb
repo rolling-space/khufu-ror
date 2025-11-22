@@ -29,6 +29,13 @@
 threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
 threads threads_count, threads_count
 
+# Specifies that the worker count should equal the number of processors in production.
+if ENV["RAILS_ENV"] == "production" || ENV["RAILS_ENV"] == "staging"
+  require "concurrent-ruby"
+  worker_count = Integer(ENV.fetch("WEB_CONCURRENCY") { Concurrent.physical_processor_count })
+  workers worker_count if worker_count > 1
+end
+
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 port ENV.fetch("PORT", 3000)
 
@@ -36,13 +43,17 @@ port ENV.fetch("PORT", 3000)
 plugin :tmp_restart
 
 # Run the Solid Queue supervisor inside of Puma for single-server deployments
-# plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"] || Rails.env.development?
+plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"] || Rails.env.development?
 
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
 
-# Automatically open the browser when in development
-require_relative "../lib/puma/plugin/open"
-# plugin :open
+if !File.exist?("/.dockerenv")
+  # Automatically open the browser when in development
+  require_relative "../lib/puma/plugin/open"
+  plugin :open
+end
+
 # plugin :tailwindcss if ENV.fetch("RAILS_ENV", "development") == "development"
+

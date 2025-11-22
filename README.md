@@ -1,4 +1,4 @@
-# khufu_ror Template Repo
+# khufu Ruby On Rails Template Repo
 
 This is a Rails 8.0 ready-to-go template repo. It follows the Github definition of what a template repo is and may not be confused with a Rails app template.
 

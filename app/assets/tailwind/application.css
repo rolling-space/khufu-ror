@@ -1,7 +1,4 @@
-@config "../../../config/tailwind.config.js";
-
 @import "tailwindcss";
-@import "../stylesheets/shadcn.css";
 
 @layer base {
   :root {

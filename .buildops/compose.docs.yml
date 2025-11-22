@@ -1,0 +1,61 @@
+name: khufu_ror-docs
+
+services:
+  prism:
+    image: stoplight/prism:4
+    command: 'mock -h 0.0.0.0 /data/swagger.yaml'
+    volumes:
+      - "${PWD}/docs/prism:/data"
+      - "${PWD}/docs/shared:/shared"
+    ports:
+      # Serve the mocked API locally as available on port 8080
+      - '4010'
+    networks:
+      - khufu_ror-proxy
+    environment:
+#      - VIRTUAL_HOST=prism.puma-dev-dns.home
+      - VIRTUAL_HOST=prism.agronet.home
+      - VIRTUAL_PORT=4010
+
+  elements:
+    image: nginx:latest
+    volumes:
+      - "${PWD}/docs/elements/index.html:/usr/share/nginx/html/index.html"
+      - "${PWD}/docs/shared:/usr/share/nginx/html/docs"
+    ports:
+      - '80'
+    networks:
+      - khufu_ror-proxy
+    environment:
+#      - VIRTUAL_HOST=elements.puma-dev-dns.home
+      - VIRTUAL_HOST=elements.agronet.home
+      - VIRTUAL_PORT=80
+
+  spectral:
+    image: stoplight/spectral
+    command: 'lint --ruleset "/data/.spectral.js" "/shared/swagger.yaml"'
+    volumes:
+      - "${PWD}/docs/spectral:/data"
+      - "${PWD}/docs/shared:/shared"
+    networks:
+      - khufu_ror-proxy
+    environment:
+#      - VIRTUAL_HOST=spectral.puma-dev-dns.home
+      - VIRTUAL_HOST=spectral.agronet.home
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    ports:
+      - "36777:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - khufu_ror-proxy
+    restart: unless-stopped
+    profiles:
+      - standalone
+
+networks:
+  khufu_ror-proxy:
+    name: agronet-proxy
+    external: true

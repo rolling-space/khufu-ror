@@ -221,8 +221,8 @@ class RenameRor < Thor
 
     if File.exist?('README.md.original')
       if File.exist?('README.md')
-        FileUtils.mv('README.md', 'warehouse/README.md.template-repo')
-        say_log("Renamed: README.md.original -> warehouse/README.md.template-repo")
+        FileUtils.mv('README.md', 'README.md.template-repo')
+        say_log("Renamed: README.md -> README.md.template-repo")
       end
       FileUtils.mv('README.md.original', 'README.md')
       say_log("Renamed: README.md.original -> README.md")
